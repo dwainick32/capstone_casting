@@ -9,7 +9,7 @@ def create_app(test_config=None):
 # create and configure the app
   app = Flask(__name__)
   CORS(app, resources={r"/api/": {"origins": "*"}})
-  setup_db(app, 'capstone_project')
+  setup_db(app)
 
   @app.after_request
   def after_request(response):

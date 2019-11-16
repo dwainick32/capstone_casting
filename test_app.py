@@ -16,8 +16,7 @@ class CastingTestCase(unittest.TestCase):
 
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = 'capstone_test'
-        setup_db(self.app, self.database_name)
+        setup_db(self.app)
         db.create_all()
 
         self.new_movie = {
