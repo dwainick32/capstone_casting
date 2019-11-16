@@ -80,7 +80,7 @@ def create_app(test_config=None):
     })
 
   @app.route('/actors/delete/<int:actor_id>', methods=['DELETE'])
-  def delete_movie(actor_id):
+  def delete_actor(actor_id):
     Actor.query.filter(Actor.id == actor_id).delete()
     db.session.commit()
     db.session.close()
