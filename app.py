@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_migrate import Migrate
 from models import setup_db, Movie, Actor, db
+from auth import AuthError, requires_auth
 
 def create_app(test_config=None):
 # create and configure the app
@@ -17,7 +18,9 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Methods', 'GET, PATCH, POST, DELETE, OPTIONS')
     return response
 
+
   @app.route('/movies')
+  @requires_auth('view:movies')
   def get_movies():
     movies = Movie.query.all()
     movies = [movie.format() for movie in movies]
@@ -26,12 +29,14 @@ def create_app(test_config=None):
     return jsonify(movies)
   
   @app.route('/actors')
+  @requires_auth('view:actors')
   def get_actors():
     actors = Actor.query.all()
     actors = [actor.format() for actor in actors]
     return jsonify(actors)
 
   @app.route('/movies/create', methods=['POST'])
+  @requires_auth('post:movie')
   def post_new_movie():
     body = request.get_json()
 
@@ -50,6 +55,7 @@ def create_app(test_config=None):
     })
 
   @app.route('/actors/create', methods=['POST'])
+  @requires_auth('post:actor')
   def post_new_actor():
     body = request.get_json()
 
@@ -70,6 +76,7 @@ def create_app(test_config=None):
     })
 
   @app.route('/movies/delete/<int:movie_id>', methods=['DELETE'])
+  @requires_auth('delete:movie')
   def delete_movie(movie_id):
     Movie.query.filter(Movie.id == movie_id).delete()
     db.session.commit()
@@ -80,6 +87,7 @@ def create_app(test_config=None):
     })
 
   @app.route('/actors/delete/<int:actor_id>', methods=['DELETE'])
+  @requires_auth('delete:actor')
   def delete_actor(actor_id):
     Actor.query.filter(Actor.id == actor_id).delete()
     db.session.commit()
@@ -90,6 +98,7 @@ def create_app(test_config=None):
     })
 
   @app.route('/actors/patch/<int:actor_id>', methods=['PATCH'])
+  @requires_auth('patch:actors')
   def patch_actor(actor_id):
 
     actor = Actor.query.filter(Actor.id== actor_id)
@@ -109,6 +118,7 @@ def create_app(test_config=None):
     })
     
   @app.route('/movies/patch/<int:movie_id>')
+  @requires_auth('patch:movies')
   def patch_movie(movie_id):
     movie = Movie.query.filter(Movie.id == movie_id)
     body = request.get_json()
@@ -120,6 +130,22 @@ def create_app(test_config=None):
     return jsonify({
       "success": True,
       "message": "update occured"
+    })
+
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      'success': False,
+      'error' : 404,
+      'message' : 'Not Found'
+    }), 404
+
+  @app.errorhandler(422)
+  def unprocessable_entity(error):
+    return jsonify({
+      'success': False,
+      'error': 422,
+      'message': 'Unprocessable Entity'
     })      
 
 
