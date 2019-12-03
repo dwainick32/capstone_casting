@@ -8,6 +8,8 @@ To login or set up an account, go to the following url:
 
 https://casting-capstone.auth0.com/authorize?audience=cast&response_type=token&client_id=UdxgyT6RC2frwGoZ7lJEO3FDCRRoDZq0&redirect_uri=https://capstone-casting.herokuapp.com/login-results
 
+There are three roles within the API. Casting Assistant, Casting Director and Executive Producer. The logins for the three roles has been provided in the separate notes 
+
 The url for the API:
 https://capstone-casting.herokuapp.com/
 

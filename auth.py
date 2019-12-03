@@ -12,6 +12,7 @@ API_AUDIENCE = 'cast'
 '''
 Exception for Auth errors
 '''
+
 class AuthError(Exception):
     def __init__(self, error, status_code):
         self.error = error
